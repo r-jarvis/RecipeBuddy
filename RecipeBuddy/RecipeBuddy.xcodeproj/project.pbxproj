@@ -88,6 +88,7 @@
 		A2C203AC2A45F5A200FF92F3 /* RecipeTypeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeTypeOptions.swift; sourceTree = "<group>"; };
 		A2C203AE2A45F5B000FF92F3 /* CuisineOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CuisineOptions.swift; sourceTree = "<group>"; };
 		A2C203B02A49FF9E00FF92F3 /* RecipeReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeReducer.swift; sourceTree = "<group>"; };
+		A2C203B22A4B357100FF92F3 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +152,7 @@
 				A266AB1A2A1930DF00D55157 /* RecipeBuddy.xcdatamodeld */,
 				A266AB482A1965D000D55157 /* Reducers */,
 				A266AB432A1954EC00D55157 /* Views */,
+				A2C203B22A4B357100FF92F3 /* Secrets.xcconfig */,
 			);
 			path = RecipeBuddy;
 			sourceTree = "<group>";
@@ -431,6 +433,7 @@
 /* Begin XCBuildConfiguration section */
 		A266AB332A1930DF00D55157 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A2C203B22A4B357100FF92F3 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -491,6 +494,7 @@
 		};
 		A266AB342A1930DF00D55157 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A2C203B22A4B357100FF92F3 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;

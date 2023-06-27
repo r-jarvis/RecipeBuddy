@@ -210,6 +210,38 @@
             endingLineNumber = "55"
             landmarkName = "liveValue"
             landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "E88FD5CF-CD78-43B0-A9D4-EE165E9C4644 - c480ae558a2f2aa"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #2 @Sendable (Swift.Int) async throws -&gt; RecipeBuddy.RecipeDetails in variable initialization expression of static RecipeBuddy.ApiClient.liveValue : RecipeBuddy.ApiClient"
+                  moduleName = "RecipeBuddy"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ryanjarvis/Desktop/RecipeBuddy/RecipeBuddy/RecipeBuddy/Clients/apiClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "55"
+                  endingLineNumber = "55"
+                  offsetFromSymbolStart = "728">
+               </Location>
+               <Location
+                  uuid = "E88FD5CF-CD78-43B0-A9D4-EE165E9C4644 - c480ae558a2f2aa"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #2 @Sendable (Swift.Int) async throws -&gt; RecipeBuddy.RecipeDetails in variable initialization expression of static RecipeBuddy.ApiClient.liveValue : RecipeBuddy.ApiClient"
+                  moduleName = "RecipeBuddy"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ryanjarvis/Desktop/RecipeBuddy/RecipeBuddy/RecipeBuddy/Clients/apiClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "55"
+                  endingLineNumber = "55"
+                  offsetFromSymbolStart = "1220">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -264,7 +296,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "F4AE26F5-EFCA-4487-B6FB-4BD2D78EBCF0"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "RecipeBuddy/Clients/apiClient.swift"

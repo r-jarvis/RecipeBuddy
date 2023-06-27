@@ -18,7 +18,7 @@ extension ApiClient: DependencyKey {
         search: { query, offset in
             var components = URLComponents(string: "https://api.spoonacular.com/recipes/complexSearch")!
             components.queryItems = [
-                URLQueryItem(name: "apiKey", value: "${{ secrets.SPOON_API_KEY }}"),
+                URLQueryItem(name: "apiKey", value: Bundle.main.infoDictionary?["SPOON_API_KEY"] as? String),
                 URLQueryItem(name: "query", value: query)
             ]
             
@@ -52,7 +52,7 @@ extension ApiClient: DependencyKey {
         getRecipeById: { recipeId in
             var components = URLComponents(string: "https://api.spoonacular.com/recipes/\(recipeId)/information")!
             components.queryItems = [
-                URLQueryItem(name: "apiKey", value: "${{ secrets.SPOON_API_KEY }}")
+                URLQueryItem(name: "apiKey", value: Bundle.main.infoDictionary?["SPOON_API_KEY"] as? String)
             ]
 
             let (data, _) = try await URLSession.shared.data(from: components.url!)
