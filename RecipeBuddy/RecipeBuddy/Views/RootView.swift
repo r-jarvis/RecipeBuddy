@@ -9,37 +9,38 @@ import ComposableArchitecture
 import SwiftUI
 
 struct RootView: View {
-    var store: Store<RecipeBuddy.AppState, RecipeBuddy.AppAction>
+    var store: Store<RecipeBuddy.State, RecipeBuddy.Action>
     
     struct ViewState: Equatable, Sendable {
         var selectedTab: Int
         
-        init(state: RecipeBuddy.AppState) {
+        init(state: RecipeBuddy.State) {
             self.selectedTab = state.selectedTab
         }
     }
     
     var body: some View {
         WithViewStore(self.store, observe: ViewState.init) { viewStore in
-            TabView(selection: viewStore.binding(get: { $0.selectedTab }, send: RecipeBuddy.AppAction.changeTab)) {
-                Text("Tab 1")
+            TabView(selection: viewStore.binding(get: { $0.selectedTab }, send: RecipeBuddy.Action.changeTab)) {
+                HomeView(store: self.store.scope(state: \.home!, action: RecipeBuddy.Action.home))
+                    .accentColor(.white)
                     .tabItem {
-                        Image(systemName: "1.square.fill")
-                        Text("Tab 1")
+                        Image(systemName: "house")
+                        Text("Home")
                     }.tag(0)
                 
-                Text("Tab 2")
+                FavoritesView(store: self.store.scope(state: \.favorites!, action: RecipeBuddy.Action.favorites))
                     .tabItem {
-                        Image(systemName: "2.square.fill")
-                        Text("Tab 2")
+                        Image(systemName: "star")
+                        Text("Favorites")
                     }.tag(1)
                 
-                Text("Tab 3")
+                SettingsView(store: self.store.scope(state: \.settings!, action: RecipeBuddy.Action.settings))
                     .tabItem {
-                        Image(systemName: "3.square.fill")
-                        Text("Tab 3")
+                        Image(systemName: "gear")
+                        Text("Settings")
                     }.tag(2)
-            }
+            }.accentColor(Color("NavColor"))
         }
     }
 }
