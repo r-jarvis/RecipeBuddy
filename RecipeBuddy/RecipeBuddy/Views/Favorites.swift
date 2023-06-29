@@ -44,17 +44,27 @@ struct FavoritesView: View {
                             } else {
                                 Text("No Recipes Found")
                             }
-                        }
+                        }.accentColor(Color("NavColor"))
                     }.padding(24)
-                    .navigationBarTitle("Favorites", displayMode: .inline)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .principal) {
+                            VStack {
+                                Text("Favorites")
+                                    .font(.headline)
+                                    .foregroundColor(Color.white)
+                            }
+                        }
+                    }
                     .navigationDestination(for: Favorites.State.Route.self) { route in
                         switch route {
                         case .recipe:
-                            RecipeView(store: self.store.scope(state: \.recipe!, action: Favorites.Action.recipe))
+                            RecipeView(store: self.store.scope(state: \.recipe!, action: Favorites.Action.recipe), showFavoriteButton: false)
                                 .accentColor(.white)
                         }
                     }
                 }
+                .navigationBarBackground()
                 .onAppear{
                     viewStore.send(.onAppear)
                 }
@@ -97,4 +107,3 @@ struct ContentView_FavoritesPreview: PreviewProvider {
         FavoritesView(store: store)
     }
 }
-

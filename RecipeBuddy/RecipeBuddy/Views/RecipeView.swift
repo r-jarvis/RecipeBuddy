@@ -11,90 +11,103 @@ import SwiftUI
 
 struct RecipeView: View {
     var store: Store<RecipeReducer.State, RecipeReducer.Action>
-    @State private var showFavoriteAlert = false
+    var showFavoriteButton: Bool
     
     struct ViewState: Equatable, Sendable {
         var selectedRecipe: RecipeDetails? = nil
         var showRecipeFavoriteAlert: Bool = false
+        var recipeSearchError: Bool = false
         
         init(state: RecipeReducer.State) {
             self.selectedRecipe = state.selectedRecipe
             self.showRecipeFavoriteAlert = state.showRecipeFavoriteAlert
+            self.recipeSearchError = state.recipeSearchError
         }
     }
     
     var body: some View {
         WithViewStore(self.store, observe: ViewState.init) { viewStore in
-            ScrollView(.vertical) {
-                if let recipe = viewStore.selectedRecipe {
-                    VStack(alignment: .leading) {
-                        HStack {
-                            AsyncImage(url: URL(string: recipe.image ?? "")) { image in
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                            } placeholder: {
-                                Color.gray
+            ZStack {
+                Color("MainColor")
+                ScrollView(.vertical) {
+                    if let recipe = viewStore.selectedRecipe {
+                        VStack(alignment: .leading) {
+                            HStack {
+                                AsyncImage(url: URL(string: recipe.image ?? "")) { image in
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                } placeholder: {
+                                    Color.gray
+                                }
+                                .frame(width: 120, height: 120)
+                                
+                                Text("\(recipe.title ?? "Recipe")")
+                                    .font(.system(size: 18, weight: .semibold))
                             }
-                            .frame(width: 120, height: 120)
                             
-                            Text("\(recipe.title ?? "Recipe")")
-                                .font(.system(size: 18, weight: .semibold))
-                        }
-                        
-                        HStack {
-                            ShareLink("Share", item: render(recipe))
-                                .padding(.horizontal, 28)
-                                .padding(.vertical, 12)
-                                .background(Color.blue)
-                                .foregroundColor(Color.white)
-                                .cornerRadius(24)
-                            
-                            Spacer()
-                            
-                            Button(action: {
-                                showFavoriteAlert = true
-                                // viewStore.send(.favorite)
-                            }) {
-                                HStack {
-                                    Image(systemName: "star")
-                                    Text("Favorite")
+                            HStack {
+                                ShareLink("Share", item: render(recipe))
+                                    .padding(.horizontal, 28)
+                                    .padding(.vertical, 12)
+                                    .background(Color.blue)
+                                    .foregroundColor(Color.white)
+                                    .cornerRadius(24)
+                                
+                                Spacer()
+                                
+                                if showFavoriteButton {
+                                    Button(action: {
+                                        viewStore.send(.favorite)
+                                    }) {
+                                        HStack {
+                                            Image(systemName: "star")
+                                            Text("Favorite")
+                                        }
+                                    }
+                                    .padding(.horizontal, 28)
+                                    .padding(.vertical, 12)
+                                    .background(Color.blue)
+                                    .foregroundColor(Color.white)
+                                    .cornerRadius(24)
                                 }
                             }
-                            .padding(.horizontal, 28)
-                            .padding(.vertical, 12)
-                            .background(Color.blue)
-                            .foregroundColor(Color.white)
-                            .cornerRadius(24)
-                        }
-                        
-                        Text("Ingredients")
-                            .font(.title)
-                        
-                        VStack(alignment: .leading) {
-                            ForEach(recipe.extendedIngredients) { ingredient in
-                                Text("\(ingredient.nameClean ?? "None")")
-                            }
-                        }.padding(.bottom, 28)
-                        
-                        Text("Instructions")
-                            .font(.title)
-                        
-                        VStack(alignment: .leading) {
-                            ForEach(recipe.analyzedInstructions[0].steps, id: \.self.number) { instruction in
-                                Text("\(instruction.number): \(instruction.step ?? "None")")
-                                    .padding(.bottom, 6)
+                            
+                            Text("Ingredients")
+                                .font(.title)
+                            
+                            VStack(alignment: .leading) {
+                                ForEach(recipe.extendedIngredients) { ingredient in
+                                    Text("\(ingredient.nameClean ?? "None")")
+                                }
+                            }.padding(.bottom, 28)
+                            
+                            Text("Instructions")
+                                .font(.title)
+                            
+                            VStack(alignment: .leading) {
+                                ForEach(recipe.analyzedInstructions[0].steps, id: \.self.number) { instruction in
+                                    Text("\(instruction.number): \(instruction.step ?? "None")")
+                                        .padding(.bottom, 6)
+                                }
                             }
                         }
+                    } else if viewStore.recipeSearchError {
+                        Text("Sorry! There was an issue loading this recipe. Please go back and try a different one!")
+                            .padding(.top, 48)
+                    } else {
+                        Text("Loading Recipe...")
+                            .padding(.top, 48)
                     }
-                } else {
-                    Text("Loading Recipe...")
                 }
+                .padding(.horizontal, 24)
+                .alert("\(viewStore.selectedRecipe?.title ?? "Recipe ") had been added to your favorites!", isPresented:  viewStore.binding(get: { $0.showRecipeFavoriteAlert }, send: RecipeReducer.Action.alertDismissed)) {
+                    Button("OK", role: .cancel) { }
+                }
+                .navigationBackButton(color: .white, text: "Back")
+                .navigationBarBackground()
             }
-            .alert("\(viewStore.selectedRecipe?.title ?? "Recipe ") had been added to your favorites!", isPresented:  viewStore.binding(get: { $0.showRecipeFavoriteAlert }, send: RecipeReducer.Action.alertDismissed)) {
-                Button("OK", role: .cancel) { }
-            }
-        }.padding(24)
+        }
     }
     
     @MainActor func render(_ recipe: RecipeDetails) -> URL {
@@ -151,6 +164,6 @@ struct ContentView_Previews: PreviewProvider {
         
         let homeState = Home.State(selectedRecipe: recipeDetails)
         let store = Store(initialState: RecipeBuddy.State(home: homeState), reducer: RecipeBuddy()).scope(state: \.home!, action: RecipeBuddy.Action.home).scope(state: \.recipe!, action: Home.Action.recipe)
-        RecipeView(store: store)
+        RecipeView(store: store, showFavoriteButton: true)
     }
 }

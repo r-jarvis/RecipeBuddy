@@ -38,9 +38,9 @@ struct RecipeListView: View {
                             Text("No Recipes Found")
                         }
                     }
-                }.padding(24)
+                }.padding(.horizontal, 24)
                 .accentColor(Color("NavColor"))
-            }
+            }.navigationBarBackground()
         }
     }
 }

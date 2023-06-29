@@ -41,6 +41,7 @@ struct RootView: View {
                         Text("Settings")
                     }.tag(2)
             }.accentColor(Color("NavColor"))
+            .toolbarBackground(Color("NavColor"), for: .navigationBar)
         }
     }
 }

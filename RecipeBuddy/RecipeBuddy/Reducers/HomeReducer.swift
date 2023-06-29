@@ -19,6 +19,7 @@ struct Home: ReducerProtocol {
         var selectedRecipe: RecipeDetails? = nil
         var showRecipeFavoriteAlert: Bool = false
         let context = NSManagedObjectContext.init(concurrencyType: .privateQueueConcurrencyType)
+        var recipeSearchError: Bool = false
         
         enum Route: Hashable {
             case recipeList
@@ -36,7 +37,6 @@ struct Home: ReducerProtocol {
         case goBackFromRecipe
         case goBackFromRecipeList
         case createPDF(URL)
-        case favorite
         case alertDismissed
         case recipe(RecipeReducer.Action)
         
@@ -61,6 +61,7 @@ struct Home: ReducerProtocol {
                 return .none
                 
             case .search:
+                state.recipeSearchError = false
                 if state.searchValue.isEmpty {
                     if let value = UserDefaults.standard.value(forKey: "offset") as? Int {
                         UserDefaults.standard.setValue(value + 10, forKey: "offset")
@@ -76,8 +77,12 @@ struct Home: ReducerProtocol {
                     await .searchResponse(TaskResult { try await self.apiClient.search(searchValue, 0) })
                 }
                 
-            case .searchResponse(.failure), .recipeResponse(.failure):
-                // TODO: Add in API failure logic
+            case .searchResponse(.failure):
+                // TODO: Add in failure logic
+                return .none
+                
+            case .recipeResponse(.failure):
+                state.recipeSearchError = true
                 return .none
                 
             case let .searchResponse(.success(response)):
@@ -115,7 +120,7 @@ struct Home: ReducerProtocol {
                 print("URL: \(url)")
                 return .none
                 
-            case .favorite:
+            case .recipe(.favorite):
                 guard let recipe = state.selectedRecipe else { return .none }
                 
                 let coreDataStack: CoreDataStack = .init(modelName: "RecipeBuddy")
@@ -138,7 +143,6 @@ struct Home: ReducerProtocol {
                 
             case .recipe:
                 return .none
-                
             }
         }
         .ifLet(\.recipe, action: /Action.recipe) {

@@ -14,6 +14,9 @@ import CoreData
 
 struct Favorites: ReducerProtocol {
     struct State: Equatable {
+        var showRecipeFavoriteAlert: Bool = false
+        var recipeSearchError: Bool = false
+        
         var recipes: [Recipe] = []
         var path: [Route] = []
         var selectedRecipe: RecipeDetails?
@@ -61,6 +64,7 @@ struct Favorites: ReducerProtocol {
                 return .none
                 
             case let .selectRecipe(recipe):
+                state.recipeSearchError = false
                 state.path.append(.recipe)
                 return .task { [recipeId = recipe.id] in
                      await .recipeResponse(TaskResult { try await self.apiClient.getRecipeById(recipeId) })
@@ -71,7 +75,7 @@ struct Favorites: ReducerProtocol {
                 return .none
                 
             case .recipeResponse(.failure):
-                // TODO: Add in API failure logic
+                state.recipeSearchError = true
                 return .none
                 
             case .recipe:
@@ -88,11 +92,15 @@ extension Favorites.State {
     var recipe: RecipeReducer.State? {
         get {
             RecipeReducer.State(
-                selectedRecipe: self.selectedRecipe
+                selectedRecipe: self.selectedRecipe,
+                showRecipeFavoriteAlert: self.showRecipeFavoriteAlert,
+                recipeSearchError: self.recipeSearchError
             )
         }
         set {
             self.selectedRecipe = newValue?.selectedRecipe
+            self.showRecipeFavoriteAlert = newValue?.showRecipeFavoriteAlert ?? false
+            self.recipeSearchError = newValue?.recipeSearchError ?? false
         }
     }
 }

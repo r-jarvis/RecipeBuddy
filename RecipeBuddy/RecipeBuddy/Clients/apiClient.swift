@@ -23,30 +23,31 @@ extension ApiClient: DependencyKey {
             ]
             
             /// Apply recipe settings
-            if let diet = UserDefaults.standard.object(forKey: "diet") as? DietOptions, diet != .all {
+            if let diet = DietOptions(rawValue: UserDefaults.standard.object(forKey: "diet") as? String ?? "all"), diet != .all {
                 components.queryItems?.append(URLQueryItem(name: "diet", value: diet.description))
             }
             
-            if let diet = UserDefaults.standard.object(forKey: "allergies") as? DietOptions, diet != .all {
-                components.queryItems?.append(URLQueryItem(name: "allergies", value: diet.description))
+            if let allergies = AllergyOptions(rawValue: UserDefaults.standard.object(forKey: "allergies") as? String ?? "all"), allergies != .none {
+                components.queryItems?.append(URLQueryItem(name: "allergies", value: allergies.description))
             }
             
-            if let diet = UserDefaults.standard.object(forKey: "recipeType") as? DietOptions, diet != .all {
-                components.queryItems?.append(URLQueryItem(name: "recipeType", value: diet.description))
+            if let recipeType = RecipeTypeOptions(rawValue: UserDefaults.standard.object(forKey: "recipeType") as? String ?? "all"), recipeType != .all {
+                components.queryItems?.append(URLQueryItem(name: "recipeType", value: recipeType.description))
             }
             
-            if let diet = UserDefaults.standard.object(forKey: "cuisine") as? DietOptions, diet != .all {
-                components.queryItems?.append(URLQueryItem(name: "cuisine", value: diet.description))
+            if let cuisine = CuisineOptions(rawValue: UserDefaults.standard.object(forKey: "cuisine") as? String ?? "all"), cuisine != .all {
+                components.queryItems?.append(URLQueryItem(name: "cuisine", value: cuisine.description))
             }
             
-            /// Only itterate the offset if there are no settings or query input
-            if let items = components.queryItems, query.isEmpty, items.count <= 2  {
+            /// Only itterate the offset if there is a blank input query
+            if query.isEmpty {
                 components.queryItems?.append(URLQueryItem(name: "offset", value: String(offset)))
             }
-
+            
+            /// Get data result from URL
             let (data, _) = try await URLSession.shared.data(from: components.url!)
             
-            let str = String(data: data, encoding: .utf8)
+            /// Decode to local 'RecipeSearchResults' struct
             return try JSONDecoder().decode(RecipeSearchResults.self, from: data)
         },
         getRecipeById: { recipeId in
@@ -55,9 +56,10 @@ extension ApiClient: DependencyKey {
                 URLQueryItem(name: "apiKey", value: Bundle.main.infoDictionary?["SPOON_API_KEY"] as? String)
             ]
 
+            /// Get data result from URL
             let (data, _) = try await URLSession.shared.data(from: components.url!)
             
-            let str = String(data: data, encoding: .utf8)
+            /// Decode to local 'RecipeDetails' struct
             return try JSONDecoder().decode(RecipeDetails.self, from: data)
         }
     )

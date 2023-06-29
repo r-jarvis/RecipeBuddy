@@ -14,14 +14,14 @@ struct RecipeReducer: ReducerProtocol {
     struct State: Equatable {
         /// Passed from higher level state
         var selectedRecipe: RecipeDetails?
-        
-        /// Local state
-        var showRecipeFavoriteAlert: Bool = false
+        var showRecipeFavoriteAlert: Bool
+        var recipeSearchError: Bool
     }
     
     enum Action: Equatable {
         case onAppear
         case alertDismissed
+        case favorite
     }
     
     public init() {}
@@ -36,6 +36,9 @@ struct RecipeReducer: ReducerProtocol {
                 state.showRecipeFavoriteAlert = false
                 return .none
                 
+            case .favorite:
+                return .none
+                
             }
         }
     }
@@ -45,11 +48,15 @@ extension Home.State {
     var recipe: RecipeReducer.State? {
         get {
             RecipeReducer.State(
-                selectedRecipe: self.selectedRecipe
+                selectedRecipe: self.selectedRecipe,
+                showRecipeFavoriteAlert: self.showRecipeFavoriteAlert,
+                recipeSearchError: self.recipeSearchError
             )
         }
         set {
             self.selectedRecipe = newValue?.selectedRecipe
+            self.showRecipeFavoriteAlert = newValue?.showRecipeFavoriteAlert ?? false
+            self.recipeSearchError = newValue?.recipeSearchError ?? false
         }
     }
 }

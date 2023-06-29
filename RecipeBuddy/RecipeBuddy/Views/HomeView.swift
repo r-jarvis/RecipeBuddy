@@ -11,10 +11,6 @@ import SwiftUI
 
 struct HomeView: View {
     init(store: Store<Home.State, Home.Action>) {
-        let navBarAppearance = UINavigationBarAppearance()
-        navBarAppearance.configureWithOpaqueBackground()
-        navBarAppearance.backgroundColor = UIColor(Color("NavColor"))
-        UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
         self.store = store
     }
     
@@ -49,41 +45,55 @@ struct HomeView: View {
                             .resizable()
                             .frame(width: 350, height: 350)
                         
-                        TextField("Leave Blank for Random Recipes!", text: viewStore.binding(get: { $0.searchValue }, send: Home.Action.searchFieldChanged))
-                            .frame(height: 55)
-                            .textFieldStyle(PlainTextFieldStyle())
-                            .padding([.horizontal], 4)
-                            .background(.white)
-                            .cornerRadius(16)
-                            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color("ButtonColor")))
-                            .padding([.horizontal], 24)
+                        VStack {
+                            TextField("Leave Blank for Random Recipes!", text: viewStore.binding(get: { $0.searchValue }, send: Home.Action.searchFieldChanged))
+                                .padding(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
+                                .accentColor(Color.black)
+                                .background(Color.white)
+                                .cornerRadius(26)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 26)
+                                        .stroke(lineWidth: 2.0)
+                                        .foregroundColor(Color("NavColor"))
+                                )
+                        }.padding(.horizontal, 24)
                             
                         
                         Button(action: {
                             viewStore.send(.search)
                         }) {
                             Text("Search")
+                                .contentShape(Rectangle())
+                                .frame(width: 210, height: 50)
                         }
-                        .padding(.horizontal, 84)
-                        .padding(.vertical, 18)
+                        
                         .background(Color("ButtonColor"))
                         .foregroundColor(Color.white)
                         .cornerRadius(24)
                         
                         Spacer()
                     }
-                    .navigationBarTitle("Home", displayMode: .inline)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .principal) {
+                            VStack {
+                                Text("Home")
+                                    .font(.headline)
+                                    .foregroundColor(Color.white)
+                            }
+                        }
+                    }
                     .navigationDestination(for: Home.State.Route.self) { route in
                         switch route {
                         case .recipeList:
                             RecipeListView(store: self.store)
                                 .accentColor(.white)
                         case .recipe:
-                            RecipeView(store: self.store.scope(state: \.recipe!, action: Home.Action.recipe))
+                            RecipeView(store: self.store.scope(state: \.recipe!, action: Home.Action.recipe), showFavoriteButton: true)
                                 .accentColor(.white)
                         }
                     }
-                }
+                }.navigationBarBackground()
             }
         }
     }
