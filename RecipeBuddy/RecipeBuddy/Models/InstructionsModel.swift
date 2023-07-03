@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Array of InstructionaStep associated with a Recipe
 struct Instructions: Decodable, Equatable, Sendable {
     var steps: [InstructionStep] = []
 }

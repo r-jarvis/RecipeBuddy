@@ -7,6 +7,8 @@
 
 import Foundation
 
+// TODO: Allow for multiple allergies to be selected at once
+/// Selected allergy will ensure no recipes have anything in that grouping as an ingredient 
 enum AllergyOptions: String, CaseIterable, Identifiable {
     var id: Self {
         return self

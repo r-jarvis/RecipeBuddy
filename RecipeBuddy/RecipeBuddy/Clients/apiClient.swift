@@ -8,20 +8,24 @@
 import Dependencies
 import Foundation
 
+/// Client that is used to make all spoonacular api calls
+/// Can be initialized multiple times across different reducers
 struct ApiClient {
     var search: @Sendable (String, Int) async throws -> RecipeSearchResults
     var getRecipeById: @Sendable (Int) async throws -> RecipeDetails
 }
 
+/// Live value that runs all API calls and returns a TaskResult
 extension ApiClient: DependencyKey {
     static let liveValue = ApiClient(
+        /// Pass a query String used in the search for new recipes. If query is blank, use offset to return 10 new recipes t from the API
         search: { query, offset in
             var components = URLComponents(string: "https://api.spoonacular.com/recipes/complexSearch")!
             components.queryItems = [
                 URLQueryItem(name: "apiKey", value: Bundle.main.infoDictionary?["SPOON_API_KEY"] as? String),
                 URLQueryItem(name: "query", value: query)
             ]
-            
+             
             /// Apply recipe settings
             if let diet = DietOptions(rawValue: UserDefaults.standard.object(forKey: "diet") as? String ?? "all"), diet != .all {
                 components.queryItems?.append(URLQueryItem(name: "diet", value: diet.description))
@@ -50,6 +54,7 @@ extension ApiClient: DependencyKey {
             /// Decode to local 'RecipeSearchResults' struct
             return try JSONDecoder().decode(RecipeSearchResults.self, from: data)
         },
+        /// Pass a recipeID and return either an error or a RecipeDetails object for that ID
         getRecipeById: { recipeId in
             var components = URLComponents(string: "https://api.spoonacular.com/recipes/\(recipeId)/information")!
             components.queryItems = [
@@ -65,6 +70,7 @@ extension ApiClient: DependencyKey {
     )
 }
 
+/// Simple extention that is used in testing to simulate API calls
 extension ApiClient: TestDependencyKey {
     static let previewValue = Self(
         search: { _ , _ in
@@ -83,6 +89,7 @@ extension ApiClient: TestDependencyKey {
     )
 }
 
+/// Wrapper to access and update the apiClient
 extension DependencyValues {
     var apiClient: ApiClient {
         get { self[ApiClient.self] }

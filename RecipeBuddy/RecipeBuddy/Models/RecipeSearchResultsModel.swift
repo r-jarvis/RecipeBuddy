@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Array of recipes used on recipe-lists screens
 struct RecipeSearchResults: Decodable, Equatable, Sendable {
     var results: [Recipe] = []
 }

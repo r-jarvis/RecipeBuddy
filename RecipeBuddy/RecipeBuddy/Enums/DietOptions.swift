@@ -7,6 +7,8 @@
 
 import Foundation
 
+/// Dietary limitations for the app
+/// If anything is selected, only recipes that match that diet type will be returned
 enum DietOptions: String, CaseIterable, Identifiable {
     var id: Self {
         return self

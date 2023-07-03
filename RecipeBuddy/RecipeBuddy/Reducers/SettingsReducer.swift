@@ -5,8 +5,6 @@
 //  Created by Ryan Jarvis on 6/22/23.
 //
 
-
-import Dependencies
 import Foundation
 import ComposableArchitecture
 import SwiftUI
@@ -21,8 +19,6 @@ struct Settings: ReducerProtocol {
     enum Action: Equatable {
         case onAppear
     }
-    
-    @Dependency(\.apiClient) var apiClient
     
     public init() {}
 

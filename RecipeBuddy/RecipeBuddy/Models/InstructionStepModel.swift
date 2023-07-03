@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// One step of an instruction list for a recipe
 struct InstructionStep: Decodable, Equatable, Sendable {
     var number: Int
     var step: String? = nil

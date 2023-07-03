@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// If a cuisine type  is selected, only recipes that match that cuisine type will be returned
 enum CuisineOptions: String, CaseIterable, Identifiable {
     var id: Self {
         return self

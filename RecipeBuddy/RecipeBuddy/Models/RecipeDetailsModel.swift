@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// All details for a recipe
 struct RecipeDetails: Decodable, Equatable, Sendable {
     var id: Int
     var summary: String

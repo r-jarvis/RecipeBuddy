@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// High level recipe details used on recipe-list screens
 struct Recipe: Decodable, Equatable, Sendable, Identifiable {
     var id: Int
     var title: String? = nil
